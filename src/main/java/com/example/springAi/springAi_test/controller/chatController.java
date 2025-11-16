@@ -7,22 +7,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.springAi.springAi_test.Entity.test_ai_object_response;
+import com.example.springAi.springAi_test.services.ChatService;
+
 @RestController
 @RequestMapping
 public class chatController {
-	  private ChatClient chatClient;
+	
+	
+//	  private ChatClient chatClient;
+//
+//	    public chatController(ChatClient.Builder builder) {
+//	        this.chatClient = builder.build();
 
-	    public chatController(ChatClient.Builder builder) {
-	        this.chatClient = builder.build();
+//	    }
 
-	    }
-
-
+//	    @GetMapping("/chat")
+//	    public ResponseEntity<String> chat(
+//	            @RequestParam(value = "q") String query
+//	    ) {
+//	        String responseContent = this.chatClient.prompt(query).call().content();
+//	        return ResponseEntity.ok(responseContent);
+//	    }
+	
+	
+	private ChatService chatservice;
+	
+	public chatController(ChatService chatservice) {
+		this.chatservice=chatservice;
+	}
+	    
 	    @GetMapping("/chat")
-	    public ResponseEntity<String> chat(
+	    public ResponseEntity<test_ai_object_response> chat(
 	            @RequestParam(value = "q") String query
 	    ) {
-	        String responseContent = this.chatClient.prompt(query).call().content();
-	        return ResponseEntity.ok(responseContent);
+	        return ResponseEntity.ok(chatservice.chat(query));
 	    }
 }
