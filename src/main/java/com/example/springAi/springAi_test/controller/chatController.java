@@ -38,7 +38,7 @@ public class chatController {
 	}
 	    
 	    @GetMapping("/chat")
-	    public ResponseEntity<test_ai_object_response> chat(
+	    public ResponseEntity<String> chat(
 	            @RequestParam(value = "q") String query
 	    ) {
 	        return ResponseEntity.ok(chatservice.chat(query));
