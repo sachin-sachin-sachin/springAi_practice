@@ -12,7 +12,7 @@ public class ai_config {
 	        return builder
 	                .defaultSystem("You are a helpful coding assistant. You are an expert in coding.")
 	                .defaultOptions(OllamaChatOptions.builder()
-	                        .model("qwen3:4b")
+	                        .model("deepseek-coder:latest")
 	                        .temperature(0.3)
 	                        .build())
 	                .build();
