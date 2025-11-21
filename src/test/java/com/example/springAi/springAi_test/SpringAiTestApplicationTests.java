@@ -14,15 +14,15 @@ class SpringAiTestApplicationTests {
 		
 	}
 
-	@Autowired
-	private ChatService chatService;
-	@Test
-	void testTemplateRender(){
-
-		System.out.println("Template Renderer");
-
-		var output=this.chatService.chatTemplate();
-		System.out.println(output);
-
-	}
+//	@Autowired
+//	private ChatService chatService;
+//	@Test
+//	void testTemplateRender(){
+//
+//		System.out.println("Template Renderer");
+//
+//		var output=this.chatService.chatTemplate();
+//		System.out.println(output);
+//
+//	}
 }

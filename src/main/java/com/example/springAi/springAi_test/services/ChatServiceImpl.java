@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+
 @Service
 public class ChatServiceImpl implements ChatService {
 	
@@ -25,17 +27,17 @@ public class ChatServiceImpl implements ChatService {
 		this.chatclient=chatclient;
 	}
 
-	@Override
-	public String chat(String query) {
-		
-	//	Prompt prompt1=new Prompt(query);
-		
-	 String result=chatclient
-				.prompt(query)
-				.call()
-				.content();
-		
-		return result;
+//	@Override
+//	public String chat(String query) {
+//		
+//	//	Prompt prompt1=new Prompt(query);
+//		
+//	 String result=chatclient
+//				.prompt(query)
+//				.call()
+//				.content();
+//		
+//		return result;
 	
 	
 	
@@ -55,49 +57,78 @@ public class ChatServiceImpl implements ChatService {
 //
 		
 		
- }
+ // }
 	
 
 	
-public String chatTemplate() {
+//public String chatTemplate() {
+//
+// //   first step
+//    PromptTemplate strTemplate = PromptTemplate.builder().template("What is {techName}? tell ma also about {techExample}").build();
+//  
+//    //render the template
+//    String renderedMessage = strTemplate.render(Map.of(
+//            "techName", "Spring",
+//            "techExample", "spring exception"
+//    ));
+//
+//
+//    Prompt prompt = new Prompt(renderedMessage);
+//
+//    var systemPromptTemplate=SystemPromptTemplate.builder()
+//            .template("You are a helpful coding assistant. You are an expert in coding.")
+//            .build();
+//    var systemMessage=systemPromptTemplate.createMessage();
+//
+//    
+//    var userPromptTemplate=PromptTemplate.builder().template("What is {techName}? tell ma also about {techExample}").build();
+//    var userMessage=userPromptTemplate.createMessage(Map.of(
+//            "techName", "Spring",
+//            "techExample", "spring exception"
+//    ));
+//
+//    Prompt prompt2 = new Prompt(systemMessage,userMessage);
+//
+//    return this.chatclient
+//            .prompt()
+//            .system(system ->
+//                    system.text(this.systemMessage))
+//            .user(user ->
+//                    user.text(this.userMessage).param("concept", "Python iteration"))
+//            .call()
+//            .content()
+//            ;
+//}
+	
+	   @Override
+	    public String chatTemplate(String query) {
 
- //   first step
-    PromptTemplate strTemplate = PromptTemplate.builder().template("What is {techName}? tell ma also about {techExample}").build();
-  
-    //render the template
-    String renderedMessage = strTemplate.render(Map.of(
-            "techName", "Spring",
-            "techExample", "spring exception"
-    ));
+
+	        return this.chatclient
+
+	                .prompt()
+//	                .advisors(new SimpleLoggerAdvisor())
+	                .system(system ->
+	                        system.text(this.systemMessage))
+	                .user(user ->
+	                        user.text(this.userMessage).param("concept", query))
+	                .call()
+	                .content()
+	                ;
+	    }
 
 
-    Prompt prompt = new Prompt(renderedMessage);
+	   
+	   @Override
+	    public Flux<String> streamChat(String query) {
 
-    var systemPromptTemplate=SystemPromptTemplate.builder()
-            .template("You are a helpful coding assistant. You are an expert in coding.")
-            .build();
-    var systemMessage=systemPromptTemplate.createMessage();
-
-    
-    var userPromptTemplate=PromptTemplate.builder().template("What is {techName}? tell ma also about {techExample}").build();
-    var userMessage=userPromptTemplate.createMessage(Map.of(
-            "techName", "Spring",
-            "techExample", "spring exception"
-    ));
-
-    Prompt prompt2 = new Prompt(systemMessage,userMessage);
-
-    return this.chatclient
-            .prompt()
-            .system(system ->
-                    system.text(this.systemMessage))
-            .user(user ->
-                    user.text(this.userMessage).param("concept", "Python iteration"))
-            .call()
-            .content()
-            ;
-}
-
+	        return  this.chatclient
+	                .prompt()
+	                .system(system-> system.text(this.systemMessage))
+	                .user(user-> user.text(this.userMessage).param("concept",query))
+	                .stream()
+	                .content();
+	    }
 
 }
 
