@@ -2,6 +2,7 @@ package com.example.springAi.springAi_test.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,23 +49,41 @@ public class chatController {
 	
 	
 	
-	private ChatService chatservice;
+//	private ChatService chatservice;
+//	
+//	public chatController(ChatService chatservice) {
+//		this.chatservice=chatservice;
+//	}
+//	
+//	  @GetMapping("/chat")
+//	    public ResponseEntity<String> chat(
+//	            @RequestParam(value = "q", required = true) String q) {
+//	        return ResponseEntity.ok(chatservice.chatTemplate(q));
+//	    }
+//	  
+//	    
+//	    @GetMapping("/stream-chat")
+//	    public ResponseEntity<Flux<String>> streamChat(
+//	            @RequestParam("q") String query
+//	    ){
+//	        return ResponseEntity.ok(this.chatservice.streamChat(query));
+//	    }
 	
-	public chatController(ChatService chatservice) {
-		this.chatservice=chatservice;
-	}
 	
-	  @GetMapping("/chat")
+	
+	// Memory Example _____________________________________________________ // 
+	  private ChatService chatService;
+
+	    public chatController(ChatService chatService) {
+	        this.chatService = chatService;
+	    }
+
+	    @GetMapping("/chat")
 	    public ResponseEntity<String> chat(
-	            @RequestParam(value = "q", required = true) String q) {
-	        return ResponseEntity.ok(chatservice.chatTemplate(q));
+	            @RequestParam(value = "q", required = true) String q,
+	            @RequestHeader("userId") String userId
+	            ) {
+	        return ResponseEntity.ok(chatService.chatTemplate(q,userId));
 	    }
-	  
-	    
-	    @GetMapping("/stream-chat")
-	    public ResponseEntity<Flux<String>> streamChat(
-	            @RequestParam("q") String query
-	    ){
-	        return ResponseEntity.ok(this.chatservice.streamChat(query));
-	    }
+
 }

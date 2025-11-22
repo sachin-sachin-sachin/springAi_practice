@@ -7,7 +7,11 @@ public interface ChatService {
 	 
 	//   public String chatTemplate();
 	 
-	  String chatTemplate(String query);
-	   
-	   Flux<String> streamChat(String query);
+//	  String chatTemplate(String query);
+//	   
+//	   Flux<String> streamChat(String query);
+	
+	
+	// Memory Example
+	  String chatTemplate(String query, String userId);
 }
