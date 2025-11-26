@@ -1,5 +1,7 @@
 package com.example.springAi.springAi_test.services;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.ai.chat.client.ChatClient;
@@ -7,6 +9,8 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -24,8 +28,11 @@ public class ChatServiceImpl implements ChatService {
 	
 	private ChatClient chatclient;
 	
-	public ChatServiceImpl(ChatClient chatclient) {
+	 private VectorStore vectorStore;
+	
+	public ChatServiceImpl(ChatClient chatclient,VectorStore vectorStore) {
 		this.chatclient=chatclient;
+		this.vectorStore = vectorStore;
 	}
 
 //	@Override
@@ -136,25 +143,53 @@ public class ChatServiceImpl implements ChatService {
 	
 	
 	// memory example
+//	
+//    @Override
+//    public String chatTemplate(String query, String userId) {
+//
+//
+//        return this.chatclient
+//
+//                .prompt()
+//                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,userId))
+////                .advisors(new SimpleLoggerAdvisor())
+//                .system(system ->
+//                        system.text(this.systemMessage))
+//                .user(user ->
+//                        user.text(this.userMessage).param("concept", query))
+//                .call()
+//                .content()
+//                ;
+//    }
 	
-    @Override
-    public String chatTemplate(String query, String userId) {
-
-
-        return this.chatclient
-
-                .prompt()
-                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,userId))
-//                .advisors(new SimpleLoggerAdvisor())
-                .system(system ->
-                        system.text(this.systemMessage))
-                .user(user ->
-                        user.text(this.userMessage).param("concept", query))
-                .call()
-                .content()
-                ;
-    }
-
+	
+	
+	
+	//rag
+	@Override
+	public void saveData(List<String> list) {
+	    System.out.println("Converting " + list.size() + " strings to documents...");
+	    
+	    List<Document> documentList = list.stream()
+	            .map(Document::new)
+	            .toList();
+	    
+	    System.out.println("Saving " + documentList.size() + " documents to vector store...");
+	    System.out.println("This may take a while as embeddings are being generated...");
+	    System.out.println("Started at: " + LocalDateTime.now());
+	    
+	    try {
+	        this.vectorStore.add(documentList);
+	        System.out.println("Completed at: " + LocalDateTime.now());
+	        System.out.println("Vector store add() completed successfully!");
+	    } catch (Exception e) {
+	        System.err.println("ERROR: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	
 
 }
 
