@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
@@ -44,8 +45,8 @@ public class ai_config {
 	        MessageChatMemoryAdvisor messageChatMemoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
 	   
 	        return builder
-	        		 .defaultAdvisors(messageChatMemoryAdvisor,new TokenPrintAdviser(), new SafeGuardAdvisor(List.of("games")))
-	                .defaultSystem("You are a helpful coding assistant. You are an expert in coding.")
+	        		 .defaultAdvisors(messageChatMemoryAdvisor,new SimpleLoggerAdvisor(), new SafeGuardAdvisor(List.of("hack")))
+//	                .defaultSystem("You are a helpful coding assistant. You are an expert in coding.")
 	                .defaultOptions(OllamaChatOptions.builder()
 	                        .model("deepseek-coder:latest")
 	                        .temperature(0.3)

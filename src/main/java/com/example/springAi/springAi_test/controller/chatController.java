@@ -78,12 +78,12 @@ public class chatController {
 	        this.chatService = chatService;
 	    }
 
-//	    @GetMapping("/chat")
-//	    public ResponseEntity<String> chat(
-//	            @RequestParam(value = "q", required = true) String q,
-//	            @RequestHeader("userId") String userId
-//	            ) {
-//	        return ResponseEntity.ok(chatService.chatTemplate(q,userId));
-//	    }
+	    @GetMapping("/chat")
+	    public ResponseEntity<String> chat(
+	            @RequestParam(value = "q", required = true) String q,
+	            @RequestHeader("userId") String userId
+	            ) {
+	        return ResponseEntity.ok(chatService.chatTemplate(q,userId));
+	    }
 
 }

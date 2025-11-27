@@ -19,4 +19,7 @@ public interface ChatService {
 	  
 	  //rag
 	  void saveData(List<String> list);
+	  
+	  // rag similar response by llm by read from vector 
+	  String chatTemplate(String query, String userId);
 }
