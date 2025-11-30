@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springAi.springAi_test.Entity.test_ai_object_response;
 import com.example.springAi.springAi_test.services.ChatService;
+import com.example.springAi.springAi_test.services.ChatServiceImpl;
 
 @RestController
 @RequestMapping
@@ -31,16 +32,32 @@ public class chatController {
 //	    }
 	
 	
-	private ChatService chatservice;
+//	private ChatService chatservice;
+//	
+//	public chatController(ChatService chatservice) {
+//		this.chatservice=chatservice;
+//	}
+//	    
+//	    @GetMapping("/chat")
+//	    public ResponseEntity<test_ai_object_response> chat(
+//	            @RequestParam(value = "q") String query
+//	    ) {
+//	        return ResponseEntity.ok(chatservice.chat(query));
+//	    }
 	
-	public chatController(ChatService chatservice) {
-		this.chatservice=chatservice;
-	}
-	    
-	    @GetMapping("/chat")
-	    public ResponseEntity<test_ai_object_response> chat(
-	            @RequestParam(value = "q") String query
-	    ) {
-	        return ResponseEntity.ok(chatservice.chat(query));
-	    }
+	
+	
+	// tool calling 
+    private ChatServiceImpl chatServiceImpl;
+
+    public chatController(ChatServiceImpl chatServiceImpl) {
+        this.chatServiceImpl = chatServiceImpl;
+    }
+
+    @GetMapping
+    public String chat(
+            @RequestParam(required = true) String q
+    ) {
+        return chatServiceImpl.chat(q);
+    }
 }
