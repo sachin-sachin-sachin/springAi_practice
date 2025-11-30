@@ -2,6 +2,7 @@ package com.example.springAi.springAi_test.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,19 +72,35 @@ public class chatController {
 	
 	
 	
-	// Memory Example _____________________________________________________ // 
-	  private ChatService chatService;
+//	// Memory Example _____________________________________________________ // 
+//	  private ChatService chatService;
+//
+//	    public chatController(ChatService chatService) {
+//	        this.chatService = chatService;
+//	    }
+//
+//	    @GetMapping("/chat")
+//	    public ResponseEntity<String> chat(
+//	            @RequestParam(value = "q", required = true) String q,
+//	            @RequestHeader("userId") String userId
+//	            ) {
+//	        return ResponseEntity.ok(chatService.chatTemplate(q,userId));
+//	    } 
+	
+	
+	
+	
+	// advance_rag
+	private ChatService chatService;
+	
+		    public chatController(ChatService chatService) {
+		        this.chatService = chatService;
+		    }
+		    
+	   @PostMapping("/chat")
+    public ResponseEntity<String> getResponse(@RequestParam("q") String userQuery){
+        return ResponseEntity.ok(chatService.getResponse(userQuery));
+    }
 
-	    public chatController(ChatService chatService) {
-	        this.chatService = chatService;
-	    }
-
-	    @GetMapping("/chat")
-	    public ResponseEntity<String> chat(
-	            @RequestParam(value = "q", required = true) String q,
-	            @RequestHeader("userId") String userId
-	            ) {
-	        return ResponseEntity.ok(chatService.chatTemplate(q,userId));
-	    }
 
 }

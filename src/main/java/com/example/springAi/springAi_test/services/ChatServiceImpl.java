@@ -14,6 +14,10 @@ import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
+import org.springframework.ai.rag.preretrieval.query.expansion.MultiQueryExpander;
+import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
+import org.springframework.ai.rag.preretrieval.query.transformation.TranslationQueryTransformer;
+import org.springframework.ai.rag.retrieval.join.ConcatenationDocumentJoiner;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -221,31 +225,69 @@ public class ChatServiceImpl implements ChatService {
 
 	  
 	  
-	  //rag vector - maria db store similarty response
+//	  //rag vector - maria db store similarty response
+//	   @Override
+//	    public String chatTemplate(String query, String userId) {
+//
+//	     var advisor = RetrievalAugmentationAdvisor.builder()
+//	                .documentRetriever(VectorStoreDocumentRetriever
+//	                        .builder()
+//	                        .vectorStore(this.vectorStore)
+//	                        .topK(3)
+//	                        .similarityThreshold(0.5)
+//	                        .build())
+//	                .queryAugmenter(ContextualQueryAugmenter.builder().allowEmptyContext(true).build())
+//	                .build();
+//
+//
+//	        return this.chatclient
+//	                .prompt()
+//	                .advisors(advisor)
+//	                .user(user ->
+//
+//                    user.text(this.userMessage).param("query", query))
+//            .call()
+//            .content()
+//            ;
+//}
 	
-	   @Override
-	    public String chatTemplate(String query, String userId) {
+	 @Override
+	    public String getResponse(String userQuery) {
 
-	     var advisor = RetrievalAugmentationAdvisor.builder()
-	                .documentRetriever(VectorStoreDocumentRetriever
-	                        .builder()
-	                        .vectorStore(this.vectorStore)
-	                        .topK(3)
-	                        .similarityThreshold(0.5)
-	                        .build())
-	                .queryAugmenter(ContextualQueryAugmenter.builder().allowEmptyContext(true).build())
+
+	        var advisor = RetrievalAugmentationAdvisor.builder()
+
+	                .queryTransformers(
+	                        RewriteQueryTransformer.builder()
+	                                .chatClientBuilder(chatclient.mutate().clone())
+	                                .build(),
+	                        TranslationQueryTransformer.builder().chatClientBuilder(chatclient.mutate().clone()).targetLanguage("hindi").build()
+
+	                )
+	                .queryExpander(MultiQueryExpander.builder().chatClientBuilder(chatclient.mutate().clone()).numberOfQueries(3).build())
+	                .documentRetriever(
+	                        VectorStoreDocumentRetriever.builder()
+	                                .vectorStore(vectorStore)
+	                                .topK(3)
+	                                .similarityThreshold(0.3)
+	                                .build()
+	                )
+	                .documentJoiner(new ConcatenationDocumentJoiner())
+	                .queryAugmenter(ContextualQueryAugmenter.builder().build())
+//	                .documentPostProcessors()
+
+
 	                .build();
 
 
-	        return this.chatclient
+	        //actual call to llm
+
+	        return chatclient
 	                .prompt()
 	                .advisors(advisor)
-	                .user(user ->
-
-                    user.text(this.userMessage).param("query", query))
-            .call()
-            .content()
-            ;
-}
+	                .user(userQuery)
+	                .call()
+	                .content();
+	    }
 }
 

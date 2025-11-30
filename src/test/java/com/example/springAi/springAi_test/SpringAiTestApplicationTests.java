@@ -1,14 +1,19 @@
 package com.example.springAi.springAi_test;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.springAi.springAi_test.helper.Helper;
 import com.example.springAi.springAi_test.services.ChatService;
+import com.example.springAi.springAi_test.services.DataLoader;
+import com.example.springAi.springAi_test.services.DataTransformer;
 
 @SpringBootTest
 class SpringAiTestApplicationTests {
@@ -45,15 +50,64 @@ class SpringAiTestApplicationTests {
 //	        System.out.println("data is saved successfully");
 //	    }
 	   
-	   @Timeout(value = 60, unit = TimeUnit.SECONDS) // Allow 60 seconds
+//	   @Timeout(value = 60, unit = TimeUnit.SECONDS) // Allow 60 seconds
+//	   @Test
+//	   void saveDataToVectorDatabase() throws InterruptedException {
+//	       System.out.println("saving data to database");
+//	       this.chatService.saveData(Helper.getData());
+//	       
+//	       Thread.sleep(30000); // Wait for embeddings
+//	       
+//	       System.out.println("data is saved successfully");
+//	   }
+	   
+	   
+	
+	   
+	   // advance rag 
+	   
+	    @Autowired
+	    private DataLoader dataLoader;
+
+	    @Autowired
+	    private DataTransformer dataTransformer;
+
+	    @Autowired
+	    private VectorStore vectorStore;
+	   
 	   @Test
-	   void saveDataToVectorDatabase() throws InterruptedException {
-	       System.out.println("saving data to database");
-	       this.chatService.saveData(Helper.getData());
-	       
-	       Thread.sleep(30000); // Wait for embeddings
-	       
-	       System.out.println("data is saved successfully");
-	   }
+	    void testDataLoader() {
+	        var documents = dataLoader.loadDocumentsFromJson();
+	        System.out.println(documents.size());
+
+	        documents.forEach(item -> {
+	        	System.out.println(item);
+	        });
+
+
+	    }
+
+	    @Test
+	    void testPdfDataLoader() {
+	        List<Document> documents = this.dataLoader.loadDocumentsFromPdf();
+	        System.out.println(documents.size());
+	        documents.forEach(item -> {
+	            System.out.println(item);
+	            System.out.println("__________________-");
+	        });
+
+	        System.out.println("Read__now going to transform");
+
+	        var transformedDocument = this.dataTransformer.transform(documents);
+	        System.out.println(transformedDocument.size());
+
+//	        going to save the data into database
+
+	        this.vectorStore.add(transformedDocument);
+	        System.out.println("Done");
+
+
+	    }
+
 
 }

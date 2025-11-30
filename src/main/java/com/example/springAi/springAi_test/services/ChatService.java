@@ -18,8 +18,16 @@ public interface ChatService {
 //	  String chatTemplate(String query, String userId);
 	  
 	  //rag
-	  void saveData(List<String> list);
+//	  void saveData(List<String> list);
 	  
 	  // rag similar response by llm by read from vector 
-	  String chatTemplate(String query, String userId);
+//	  String chatTemplate(String query, String userId);
+	
+	
+	//advance rag 
+	   String getResponse(String userQuery);
+	   
+	   void saveData(List<String> list);
+
+
 }
